@@ -9,7 +9,7 @@ find_package(GTest REQUIRED)
 
 enable_testing()
 
-set (CMAKE_CXX_FLAGS "-std=c++14")
+set (CMAKE_CXX_FLAGS "-std=c++11")
 
 include_directories(  
   ${GTEST_INCLUDE_DIRS}
