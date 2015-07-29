@@ -168,12 +168,6 @@ BOOST_FUSION_ADAPT_STRUCT(test_point, (float, x) (float, y) (float, z));
 TEST_F(Hdf5Test, WriteStructure) {
 	{
 		hdf::HDFFile<> file(file_name_struct_, hdf::HDFFile<>::truncate);
-		std::vector<std::pair<int, float> > pairs(2);
-		pairs[0] = std::make_pair(1, 2.5f);
-		pairs[1] = std::make_pair(1, 3.5f);
-		std::cout << "Writing pairs" << std::endl;
-		file.writeDataset("/test1", pairs);
-
 		std::vector<test_point> points(4);
 		points[0] = test_point(0, 0, 1);
 		points[1] = test_point(1, 0, 0);
@@ -181,24 +175,31 @@ TEST_F(Hdf5Test, WriteStructure) {
 		points[3] = test_point(0, 1, 0);
 		std::cout << "Writing points" << std::endl;
 		boost::shared_ptr<hdf::HDFDataSet<> > datasetpoints = file.writeDataset(
-				"/test", points);
+				"/struct", points);
 	}
 
 	hdf::HDFFile<> file(file_name_struct_);
 	boost::shared_ptr<hdf::HDFDataSet<> > datasetpoints = file.openDataset(
-			"/test");
+			"/struct");
 	std::vector<test_point> read;
 	datasetpoints->readData(read);
 	ASSERT_EQ(12, read.size());
 	ASSERT_EQ(test_point(0, 0, 1), read[0]);
 	ASSERT_EQ(test_point(1, 0, 0), read[1]);
+}
 
+TEST_F(Hdf5Test, WritePairs){
+	hdf::HDFFile<> file(file_name_struct_, hdf::HDFFile<>::truncate);
+	std::vector<std::pair<int, float> > pairs(2);
+	pairs[0] = std::make_pair(1, 2.5f);
+	pairs[1] = std::make_pair(1, 3.5f);
+	file.writeDataset("/pairs", pairs);
 	boost::shared_ptr<hdf::HDFDataSet<> > datasetpairs = file.openDataset(
-			"/test1");
+			"/pairs");
 
-	std::vector<std::pair<int, float> > pairs;
-	datasetpairs->readData(pairs);
-	ASSERT_EQ(2, pairs.size());
-	ASSERT_EQ(std::make_pair(1, 2.5f), pairs[0]);
+	std::vector<std::pair<int, float> > actual(2);
+	datasetpairs->readData(actual);
+	ASSERT_EQ(2, actual.size());
+	ASSERT_EQ(std::make_pair(1, 2.5f), actual[0]);
 }
 
