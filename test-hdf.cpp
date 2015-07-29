@@ -47,7 +47,7 @@ TEST_F(Hdf5Test, CreateGroup) {
 }
 
 TEST_F(Hdf5Test, OpenGroup) {
-  hdf::HDFFile<> file("test.h5", hdf::HDFFile<>::truncate);
+  hdf::HDFFile<> file(file_name_, hdf::HDFFile<>::truncate);
   {
     boost::shared_ptr<hdf::HDFGroup<> > group = file.createGroup("/test-group");
   }
@@ -92,7 +92,7 @@ TEST_F(Hdf5Test, WriteAttribute) {
 
 TEST_F(Hdf5Test, WriteDataset) {
   {
-    hdf::HDFFile<> file("test.h5", hdf::HDFFile<>::truncate);
+    hdf::HDFFile<> file(file_name_, hdf::HDFFile<>::truncate);
 
     std::vector<hsize_t> dims;
     dims.resize(2);
@@ -102,7 +102,7 @@ TEST_F(Hdf5Test, WriteDataset) {
     boost::shared_ptr<hdf::HDFDataSet<> > datasetint =
         file.createDataset<int>("/test", filespace);
   }
-  hdf::HDFFile<> file("test.h5");
+  hdf::HDFFile<> file(file_name_);
 
   boost::shared_ptr<hdf::HDFDataSet<> > dataset = file.openDataset("/test");
 
